@@ -1,25 +1,32 @@
-import os
-from dotenv import load_dotenv
-from sqlmodel import SQLModel
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel, Session, create_engine
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./proyectos.sqlite3")
+# =========================================================
+# CONFIGURACIÓN BASE DE DATOS LOCAL (sincrónica)
+# =========================================================
 
-engine = create_async_engine(DATABASE_URL, echo=False, future=True)
+# Ruta del archivo de base de datos SQLite local
+DATABASE_URL = "sqlite:///./database.db"
 
-AsyncSessionLocal = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
+# Crear engine (sin async)
+# connect_args evita errores de thread en SQLite
+engine = create_engine(DATABASE_URL, echo=True, connect_args={"check_same_thread": False})
 
-async def get_session() -> AsyncSession:
-    async with AsyncSessionLocal() as session:
+
+# =========================================================
+# CREAR TABLAS
+# =========================================================
+def create_db_and_tables():
+    """Crea las tablas definidas en los modelos."""
+    from models import Empleado, Proyecto, Asignacion  # importa aquí para evitar ciclos
+    SQLModel.metadata.create_all(engine)
+
+
+# =========================================================
+# SESIÓN DE BASE DE DATOS
+# =========================================================
+def get_session():
+    """Dependency de FastAPI para usar la sesión."""
+    with Session(engine) as session:
         yield session
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
 
