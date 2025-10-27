@@ -2,6 +2,10 @@
 from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
 
+# Tipos para estado
+EstadoEmpleado = bool
+EstadoProyecto = bool
+
 # ================= EMPLEADO =================
 class EmpleadoBase(SQLModel):
     nombre: str

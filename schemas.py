@@ -1,6 +1,6 @@
 from typing import List
 from sqlmodel import SQLModel
-from .models import EstadoEmpleado, EstadoProyecto
+from models import EstadoEmpleado, EstadoProyecto
 
 # Empleados
 class EmpleadoCreate(SQLModel):
@@ -51,4 +51,14 @@ class ProyectoRead(SQLModel):
 
 class ProyectoWithEmpleados(ProyectoRead):
     empleados_ids: List[int] = []
+
+# Asignaciones
+class AsignacionCreate(SQLModel):
+    empleado_id: int
+    proyecto_id: int
+
+class AsignacionRead(SQLModel):
+    id: int
+    empleado_id: int
+    proyecto_id: int
 
