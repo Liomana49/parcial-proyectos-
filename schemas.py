@@ -1,4 +1,5 @@
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 from sqlmodel import SQLModel
 from models import EstadoEmpleado, EstadoProyecto
 
@@ -21,6 +22,7 @@ class EmpleadoRead(SQLModel):
     especialidad: str
     salario: float
     estado: EstadoEmpleado
+    deleted_at: Optional[datetime] = None
 
 class EmpleadoWithProyectos(EmpleadoRead):
     proyectos_ids: List[int] = []
@@ -48,6 +50,7 @@ class ProyectoRead(SQLModel):
     presupuesto: float
     estado: EstadoProyecto
     gerente_id: int | None
+    deleted_at: Optional[datetime] = None
 
 class ProyectoWithEmpleados(ProyectoRead):
     empleados_ids: List[int] = []
@@ -60,4 +63,5 @@ class AsignacionRead(SQLModel):
     id: int
     empleado_id: int
     proyecto_id: int
+    deleted_at: Optional[datetime] = None
 

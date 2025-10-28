@@ -4,7 +4,8 @@ from typing import List
 
 from database import get_session
 from crud import (
-    crear_empleado, listar_empleados, obtener_empleado, actualizar_empleado, eliminar_empleado
+    crear_empleado, listar_empleados, obtener_empleado, actualizar_empleado, eliminar_empleado,
+    listar_empleados_eliminados
 )
 from schemas import EmpleadoCreate, EmpleadoRead, EmpleadoUpdate
 
@@ -29,3 +30,7 @@ def actualizar_empleado_por_id(empleado_id: int, empleado: EmpleadoUpdate, db: S
 @router.delete("/{empleado_id}")
 def eliminar_empleado_por_id(empleado_id: int, db: Session = Depends(get_session)):
     return eliminar_empleado(db, empleado_id)
+
+@router.get("/eliminados", response_model=List[EmpleadoRead])
+def listar_empleados_eliminados_endpoint(db: Session = Depends(get_session)):
+    return listar_empleados_eliminados(db)

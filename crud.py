@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 from models import Empleado, Proyecto, Asignacion
@@ -21,7 +22,7 @@ def crear_empleado(db: Session, empleado: EmpleadoCreate) -> Empleado:
 
 
 def listar_empleados(db: Session) -> List[Empleado]:
-    empleados = db.exec(select(Empleado)).all()
+    empleados = db.exec(select(Empleado).where(Empleado.deleted_at == None)).all()
     return empleados
 
 
@@ -57,7 +58,8 @@ def eliminar_empleado(db: Session, empleado_id: int):
     if proyectos_gerenciados:
         raise HTTPException(status_code=400, detail="No se puede eliminar un empleado que es gerente de proyectos")
 
-    db.delete(empleado)
+    empleado.deleted_at = datetime.utcnow()
+    db.add(empleado)
     db.commit()
     return {"detail": "Empleado eliminado correctamente"}
 
@@ -66,6 +68,10 @@ def eliminar_empleado(db: Session, empleado_id: int):
 # CRUD PROYECTOS
 # =========================================================
 def crear_proyecto(db: Session, proyecto: ProyectoCreate) -> Proyecto:
+    if proyecto.gerente_id:
+        gerente = db.get(Empleado, proyecto.gerente_id)
+        if not gerente:
+            raise HTTPException(status_code=404, detail="Gerente no encontrado")
     nuevo = Proyecto.from_orm(proyecto)
     db.add(nuevo)
     db.commit()
@@ -74,7 +80,7 @@ def crear_proyecto(db: Session, proyecto: ProyectoCreate) -> Proyecto:
 
 
 def listar_proyectos(db: Session) -> List[Proyecto]:
-    proyectos = db.exec(select(Proyecto)).all()
+    proyectos = db.exec(select(Proyecto).where(Proyecto.deleted_at == None)).all()
     return proyectos
 
 
@@ -91,6 +97,11 @@ def actualizar_proyecto(db: Session, proyecto_id: int, datos: ProyectoUpdate) ->
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
 
     datos_actualizados = datos.dict(exclude_unset=True)
+    if 'gerente_id' in datos_actualizados and datos_actualizados['gerente_id'] is not None:
+        gerente = db.get(Empleado, datos_actualizados['gerente_id'])
+        if not gerente:
+            raise HTTPException(status_code=404, detail="Gerente no encontrado")
+
     for key, value in datos_actualizados.items():
         setattr(proyecto, key, value)
 
@@ -105,12 +116,14 @@ def eliminar_proyecto(db: Session, proyecto_id: int):
     if not proyecto:
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
 
-    # Elimina también las asignaciones asociadas
+    # Soft delete también las asignaciones asociadas
     asignaciones = db.exec(select(Asignacion).where(Asignacion.proyecto_id == proyecto_id)).all()
     for asignacion in asignaciones:
-        db.delete(asignacion)
+        asignacion.deleted_at = datetime.utcnow()
+        db.add(asignacion)
 
-    db.delete(proyecto)
+    proyecto.deleted_at = datetime.utcnow()
+    db.add(proyecto)
     db.commit()
     return {"detail": "Proyecto y sus asignaciones eliminados correctamente"}
 
@@ -125,11 +138,12 @@ def asignar_empleado_a_proyecto(db: Session, datos: AsignacionCreate) -> Asignac
     if not empleado or not proyecto:
         raise HTTPException(status_code=404, detail="Empleado o proyecto no encontrado")
 
-    # Verificar si ya está asignado
+    # Verificar si ya está asignado (solo asignaciones activas)
     existe = db.exec(
         select(Asignacion)
         .where(Asignacion.empleado_id == datos.empleado_id)
         .where(Asignacion.proyecto_id == datos.proyecto_id)
+        .where(Asignacion.deleted_at == None)
     ).first()
 
     if existe:
@@ -143,13 +157,32 @@ def asignar_empleado_a_proyecto(db: Session, datos: AsignacionCreate) -> Asignac
 
 
 def listar_asignaciones(db: Session) -> List[Asignacion]:
-    return db.exec(select(Asignacion)).all()
+    return db.exec(select(Asignacion).where(Asignacion.deleted_at == None)).all()
 
 
 def eliminar_asignacion(db: Session, asignacion_id: int):
     asignacion = db.get(Asignacion, asignacion_id)
     if not asignacion:
         raise HTTPException(status_code=404, detail="Asignación no encontrada")
-    db.delete(asignacion)
+    asignacion.deleted_at = datetime.utcnow()
+    db.add(asignacion)
     db.commit()
     return {"detail": "Asignación eliminada correctamente"}
+
+
+# =========================================================
+# FUNCIONES PARA LISTAR ELIMINADOS
+# =========================================================
+def listar_empleados_eliminados(db: Session) -> List[Empleado]:
+    empleados = db.exec(select(Empleado).where(Empleado.deleted_at != None)).all()
+    return empleados
+
+
+def listar_proyectos_eliminados(db: Session) -> List[Proyecto]:
+    proyectos = db.exec(select(Proyecto).where(Proyecto.deleted_at != None)).all()
+    return proyectos
+
+
+def listar_asignaciones_eliminadas(db: Session) -> List[Asignacion]:
+    asignaciones = db.exec(select(Asignacion).where(Asignacion.deleted_at != None)).all()
+    return asignaciones

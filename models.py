@@ -1,5 +1,6 @@
 # models.py
 from typing import Optional, List
+from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
 # Tipos para estado
@@ -12,6 +13,7 @@ class EmpleadoBase(SQLModel):
     especialidad: str
     salario: float
     estado: bool = True
+    deleted_at: Optional[datetime] = None
 
 class Empleado(EmpleadoBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -24,6 +26,7 @@ class ProyectoBase(SQLModel):
     descripcion: str
     presupuesto: float
     estado: bool = True
+    deleted_at: Optional[datetime] = None
 
 class Proyecto(ProyectoBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -35,6 +38,7 @@ class Proyecto(ProyectoBase, table=True):
 class AsignacionBase(SQLModel):
     empleado_id: int = Field(foreign_key="empleado.id")
     proyecto_id: int = Field(foreign_key="proyecto.id")
+    deleted_at: Optional[datetime] = None
 
 class Asignacion(AsignacionBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
