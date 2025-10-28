@@ -2,7 +2,7 @@ from typing import List
 from sqlmodel import SQLModel
 from models import EstadoEmpleado, EstadoProyecto
 
-# Empleados
+
 class EmpleadoCreate(SQLModel):
     nombre: str
     especialidad: str
@@ -26,7 +26,7 @@ class EmpleadoWithProyectos(EmpleadoRead):
     proyectos_ids: List[int] = []
     proyectos_gerenciados_ids: List[int] = []
 
-# Proyectos
+
 class ProyectoCreate(SQLModel):
     nombre: str
     descripcion: str
@@ -52,7 +52,6 @@ class ProyectoRead(SQLModel):
 class ProyectoWithEmpleados(ProyectoRead):
     empleados_ids: List[int] = []
 
-# Asignaciones
 class AsignacionCreate(SQLModel):
     empleado_id: int
     proyecto_id: int

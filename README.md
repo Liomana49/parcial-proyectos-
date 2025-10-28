@@ -1,6 +1,6 @@
 # Sistema de Gestión de Proyectos
 
-¡Hola! Mi nombre es Laura Isabella Omaña Berrio y este es mi parcial para la asignatura de desarrollo de software. Este proyecto es una API RESTful desarrollada con FastAPI para gestionar empleados, proyectos y sus asignaciones en un sistema de gestión de proyectos.
+¡Hola! Mi nombre es Laura Isabella Omaña Berrio mi codigo es 67001249 y este es mi parcial para la asignatura de desarrollo de software. Este proyecto es una API donde se gestionan empleados, proyectos y sus asignaciones en un sistema de gestión de proyectos.
 
 ## Descripción del Proyecto
 
