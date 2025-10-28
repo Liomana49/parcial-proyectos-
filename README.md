@@ -1,10 +1,10 @@
-# Sistema de Gestión de Proyectos
+# Sistema de Gestión de Proyectos 📚
 
 Hola profe Sigmotoa mi nombre es Laura Isabella Omaña Berrio mi codigo es 67001249 y te voy a contar un poco sobre mi parcial se trata de una API donde se gestionan empleados, proyectos y sus asignaciones en un sistema de gestión de proyectos.
 
-## Descripción del Proyecto
+## Descripción del Proyecto 💻
 
-Este proyecto implementa un sistema completo para la administración de recursos humanos y proyectos. Permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre empleados, proyectos y las asignaciones entre ellos. Utiliza SQLModel para el mapeo objeto-relacional con una base de datos SQLite, proporcionando una interfaz sencilla y eficiente para la gestión de datos.
+Este parcial implementa un sistema completo para la administración de recursos humanos y proyectos. Permite realizar operaciones CRUD Crear, Leer, Actualizar, Eliminar sobre empleados, proyectos y las asignaciones entre ellos. Utiliza SQLModel para el mapeo objeto relacion con una base de datos SQLite, proporcionando una interfaz para la gestión de datos. gracias profe por tu atencion 🤭🫣
 
 ### Características Principales
 
@@ -34,6 +34,6 @@ Este proyecto implementa un sistema completo para la administración de recursos
    ```
 4. Accede a la documentación de la API en `http://127.0.0.1:8000/docs`.
 
-## Sobre Mí
+## Sobre Mí🎀
 
-Soy Laura Isabella Omaña Berrio, estudiante apasionada por el desarrollo de software y las tecnologías web. Me encanta aprender nuevas herramientas y aplicarlas en proyectos prácticos como este. Este parcial refleja mi interés en crear soluciones eficientes y escalables para problemas reales en la gestión de proyectos.
+Soy Laura Isabella Omaña Berrio, estudiante de ingeniera de sistemas, me encanta aprender nuevas herramientas y aplicarlas en proyectos, como este. Me gusta mucho escuchar musica explorar y probar cosas nuevas , tengo una mascosta llamada oliver 🐶 y 7 gatos 🐱,  este parcial refleja mi interés en la materia y crear soluciones para el desarrollo web. 🌷🥰
