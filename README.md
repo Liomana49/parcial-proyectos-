@@ -1,6 +1,6 @@
 # Sistema de Gestión de Proyectos
 
-Hola Mi nombre es Laura Isabella Omaña Berrio mi codigo es 67001249 y este es mi parcial para la asignatura de desarrollo de software. Este proyecto es una API donde se gestionan empleados, proyectos y sus asignaciones en un sistema de gestión de proyectos.
+Hola profe Sigmotoa mi nombre es Laura Isabella Omaña Berrio mi codigo es 67001249 y te voy a contar un poco sobre mi parcial se trata de una API donde se gestionan empleados, proyectos y sus asignaciones en un sistema de gestión de proyectos.
 
 ## Descripción del Proyecto
 
