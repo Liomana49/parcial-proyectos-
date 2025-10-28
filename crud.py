@@ -10,9 +10,7 @@ from schemas import (
 )
 
 
-# =========================================================
-# CRUD EMPLEADOS
-# =========================================================
+
 def crear_empleado(db: Session, empleado: EmpleadoCreate) -> Empleado:
     nuevo = Empleado.from_orm(empleado)
     db.add(nuevo)
@@ -53,7 +51,7 @@ def eliminar_empleado(db: Session, empleado_id: int):
     if not empleado:
         raise HTTPException(status_code=404, detail="Empleado no encontrado")
 
-    # Previene borrar gerente asignado a proyectos
+    
     proyectos_gerenciados = db.exec(select(Proyecto).where(Proyecto.gerente_id == empleado_id)).all()
     if proyectos_gerenciados:
         raise HTTPException(status_code=400, detail="No se puede eliminar un empleado que es gerente de proyectos")
@@ -64,9 +62,7 @@ def eliminar_empleado(db: Session, empleado_id: int):
     return {"detail": "Empleado eliminado correctamente"}
 
 
-# =========================================================
-# CRUD PROYECTOS
-# =========================================================
+
 def crear_proyecto(db: Session, proyecto: ProyectoCreate) -> Proyecto:
     if proyecto.gerente_id:
         gerente = db.get(Empleado, proyecto.gerente_id)
@@ -116,7 +112,7 @@ def eliminar_proyecto(db: Session, proyecto_id: int):
     if not proyecto:
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
 
-    # Soft delete también las asignaciones asociadas
+    
     asignaciones = db.exec(select(Asignacion).where(Asignacion.proyecto_id == proyecto_id)).all()
     for asignacion in asignaciones:
         asignacion.deleted_at = datetime.utcnow()
@@ -128,9 +124,7 @@ def eliminar_proyecto(db: Session, proyecto_id: int):
     return {"detail": "Proyecto y sus asignaciones eliminados correctamente"}
 
 
-# =========================================================
-# CRUD ASIGNACIONES (relación N:M)
-# =========================================================
+
 def asignar_empleado_a_proyecto(db: Session, datos: AsignacionCreate) -> Asignacion:
     empleado = db.get(Empleado, datos.empleado_id)
     proyecto = db.get(Proyecto, datos.proyecto_id)
@@ -138,7 +132,7 @@ def asignar_empleado_a_proyecto(db: Session, datos: AsignacionCreate) -> Asignac
     if not empleado or not proyecto:
         raise HTTPException(status_code=404, detail="Empleado o proyecto no encontrado")
 
-    # Verificar si ya está asignado (solo asignaciones activas)
+    
     existe = db.exec(
         select(Asignacion)
         .where(Asignacion.empleado_id == datos.empleado_id)
@@ -170,9 +164,7 @@ def eliminar_asignacion(db: Session, asignacion_id: int):
     return {"detail": "Asignación eliminada correctamente"}
 
 
-# =========================================================
-# FUNCIONES PARA LISTAR ELIMINADOS
-# =========================================================
+
 def listar_empleados_eliminados(db: Session) -> List[Empleado]:
     empleados = db.exec(select(Empleado).where(Empleado.deleted_at != None)).all()
     return empleados

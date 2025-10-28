@@ -1,13 +1,13 @@
-# models.py
+
 from typing import Optional, List
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
-# Tipos para estado
+
 EstadoEmpleado = bool
 EstadoProyecto = bool
 
-# ================= EMPLEADO =================
+
 class EmpleadoBase(SQLModel):
     nombre: str
     especialidad: str
@@ -20,7 +20,7 @@ class Empleado(EmpleadoBase, table=True):
     proyectos_asignados: List["Asignacion"] = Relationship(back_populates="empleado")
     proyectos_gerenciados: List["Proyecto"] = Relationship(back_populates="gerente")
 
-# ================= PROYECTO =================
+
 class ProyectoBase(SQLModel):
     nombre: str
     descripcion: str
@@ -34,7 +34,7 @@ class Proyecto(ProyectoBase, table=True):
     gerente: Optional["Empleado"] = Relationship(back_populates="proyectos_gerenciados")
     empleados_asignados: List["Asignacion"] = Relationship(back_populates="proyecto")
 
-# ================= ASIGNACION (N:M) =================
+
 class AsignacionBase(SQLModel):
     empleado_id: int = Field(foreign_key="empleado.id")
     proyecto_id: int = Field(foreign_key="proyecto.id")
